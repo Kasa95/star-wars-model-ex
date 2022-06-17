@@ -8,23 +8,50 @@ from eralchemy import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
+class User(Base):
+    __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    username = Column(String(32), nullable=False)
+    password = Column(String(64), nullable=False)
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+class Planet(Base):
+    __tablename__ = 'planets'
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    name = Column(String(64), nullable=False)
+    climate = Column(String(32), nullable=True)
+    population = Column(Integer, nullable=True)
+
+class Vehicle(Base):
+    __tablename__ = 'vehicles'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(64), nullable=False)
+    manufacturer = Column(String(64), nullable=True)
+    max_speed = Column(Integer, nullable=True)
+
+class Character(Base):
+    __tablename__ = 'characters'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(64), nullable=False)
+    eyes = Column(String(32), nullable=True)
+    hair = Column(String(32), nullable=True)
+    planet_id = Column(Integer, ForeignKey('planets.id'))
+    vehicle_id = Column(Integer, ForeignKey('vehicles.id'))
+
+    planet = relationship(Planet)
+    vehicle = relationship(Vehicle)
+
+class Favorite(Base):
+    __tablename__ = 'favorites'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    planet_id = Column(Integer, ForeignKey('planets.id'))
+    character_id = Column(Integer, ForeignKey('characters.id'))
+    vehicle_id = Column(Integer, ForeignKey('vehicles.id'))
+    
+    user = relationship(User)
+    planet = relationship(Planet)
+    character = relationship(Character)
+    vehicle = relationship(Vehicle)
 
     def to_dict(self):
         return {}
